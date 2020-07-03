@@ -1,9 +1,11 @@
 import {observable, computed, reaction, action} from 'mobx';
-import TodoModel from '../models/TodoModel'
+import TodoModel from '../models/TodoModel';
+import Todo from '../models/Todo';
 import * as Utils from '../utils';
+import { Collection } from 'mobx-mc';
 
 
-export default class TodoStore {
+export default class TodoStore extends Collection {
 	@observable todos = [];
 
 	@computed get activeTodoCount() {
@@ -13,24 +15,32 @@ export default class TodoStore {
 		)
 	}
 
-	@computed get completedCount() {
-		return this.todos.length - this.activeTodoCount;
+	url() {
+		return '/todos';
+	}
+
+	model() {
+		return Todo;
 	}
 
 	subscribeServerToStore() {
 		reaction(
 			() => this.toJS(),
-			todos => window.fetch && fetch('/api/todos', {
-				method: 'post',
-				body: JSON.stringify({ todos }),
-				headers: new Headers({ 'Content-Type': 'application/json' })
-			})
+			todos => this.set(todos, {update: true})
 		);
 	}
 
-	@action
+	@computed get completedCount() {
+		return this.todos.length - this.activeTodoCount;
+	}
+
 	addTodo (title) {
-		this.todos.push(new TodoModel(this, Utils.uuid(), title, false));
+		let todo = new Todo({
+			title: title,
+			completed: false
+		});
+		console.log(todo);
+		this.add(todo);
 	}
 
 	@action

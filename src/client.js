@@ -7,10 +7,10 @@ import ReactDOM from 'react-dom';
 
 const initialState = window.initialState && JSON.parse(window.initialState) || {};
 
-var todoStore = TodoStore.fromJS(initialState.todos || []);
+var todoStore = new TodoStore();
 var viewStore = new ViewStore();
 
-todoStore.subscribeServerToStore();
+//todoStore.subscribeServerToStore();
 
 ReactDOM.render(
 	<TodoApp todoStore={todoStore} viewStore={viewStore}/>,

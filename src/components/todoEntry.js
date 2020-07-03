@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import {observer} from 'mobx-react';
 import {action} from 'mobx';
+import Todo from '../models/Todo';
 
 const ENTER_KEY = 13;
 
@@ -29,6 +30,12 @@ export default class TodoEntry extends React.Component {
 		var val = ReactDOM.findDOMNode(this.refs.newField).value.trim();
 
 		if (val) {
+			console.log(this.props.todoStore);
+			let todo = new Todo({
+				title: val,
+				completed: false
+			});
+			console.log(todo);
 			this.props.todoStore.addTodo(val);
 			ReactDOM.findDOMNode(this.refs.newField).value = '';
 		}
